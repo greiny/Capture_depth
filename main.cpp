@@ -28,13 +28,23 @@ int main()
     // Creating OpenCV matrix from IR image
     Mat ir(Size(640, 480), CV_8UC1, (void*)dev->get_frame_data(rs::stream::infrared), Mat::AUTO_STEP);
 
+    // Display the image in GUI
+    namedWindow("Display Image_1", WINDOW_AUTOSIZE );
+    imshow("Display Image_!", ir);
+
     // Apply Histogram Equalization
     equalizeHist( ir, ir );
-    applyColorMap(ir, ir, COLORMAP_JET);
 
     // Display the image in GUI
-    namedWindow("Display Image", WINDOW_AUTOSIZE );
-    imshow("Display Image", ir);
+    namedWindow("Display Image_2", WINDOW_AUTOSIZE );
+    imshow("Display Image_2", ir);
+
+    applyColorMap(ir, ir, COLORMAP_JET);
+
+
+    // Display the image in GUI
+    namedWindow("Display Image_3", WINDOW_AUTOSIZE );
+    imshow("Display Image_3", ir);
 
     waitKey(0);
 
