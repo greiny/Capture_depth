@@ -40,7 +40,7 @@ int main()
     imshow("Display Image_2", ir);
 
     applyColorMap(ir, ir, COLORMAP_JET);
-
+   cout << "it = "<< endl << " "  << it << endl << endl;
 
     // Display the image in GUI
     namedWindow("Display Image_3", WINDOW_AUTOSIZE );
