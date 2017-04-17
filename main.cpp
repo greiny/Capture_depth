@@ -4,8 +4,32 @@
 // include OpenCV header file
 #include <opencv2/opencv.hpp>
 
+#include <iostream>
+#include <fstream>
+
 using namespace std;
 using namespace cv;
+
+void writeMatToFile(cv::Mat& m, const char* filename)
+{
+    ofstream fout(filename);
+
+    if(!fout)
+    {
+        cout<<"File Not Opened"<<endl;  return;
+    }
+
+    for(int i=0; i<m.rows; i++)
+    {
+        for(int j=0; j<m.cols; j++)
+        {
+            fout<<m.at<float>(i,j)<<"\t";
+        }
+        fout<<endl;
+    }
+
+    fout.close();
+}
 
 int main()
 {
@@ -27,12 +51,11 @@ int main()
 
     // Creating OpenCV matrix from IR image
     Mat ir(Size(640, 480), CV_8UC1, (void*)dev->get_frame_data(rs::stream::infrared), Mat::AUTO_STEP);
-
+    
     // Apply Histogram Equalization
     equalizeHist( ir, ir );
-    cout << "ir = "<< endl << " "  << ir << endl << endl;
+    writeMatToFile(ir, "data.xml");
     applyColorMap(ir, ir, COLORMAP_JET);
-    imwrite( "depth_Image.jpg", ir);
 
     // Display the image in GUI
     namedWindow("Display Image", WINDOW_AUTOSIZE );
