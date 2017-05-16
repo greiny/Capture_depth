@@ -13,7 +13,7 @@ LIBS= $(--cflags -lrealsense -lopencv_core -lopencv_omgproc -lopencv_contrib)
 
 
 all:
-	g++ -std=c++11 main.cpp -lrealsense -lopencv_core -lopencv_imgproc -lopencv_highgui -o test
+	g++ -std=c++11 cpp-tutorial-1-depth.cpp -lrealsense $(pkg-config --cflags --libs opencv) -o test
 	
 clean:
 	rm -rf *.o
