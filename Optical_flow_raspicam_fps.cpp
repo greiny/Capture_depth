@@ -21,32 +21,28 @@ using namespace cv;
 
 int main ( int argc,char **argv ) {
 	
-    cv::Mat imgA, imgB;
-    clock_t begin, end;
-    //time_t start, endup;
+    //check for FPS(Frame Per Second)
+    int frames = 0;
+    float time = 0, fps = 0;
+    auto t0 = std::chrono::high_resolution_clock::now();
+
     
     //set camera params
     int const INPUT_WIDTH 	= 320;
     int const INPUT_HEIGHT 	= 240;
     int const FRAMERATE 	= 60;
+    cv::Mat imgA, imgB;
+    Mat imgA(INPUT_HEIGHT, INPUT_WIDTH, CV_8UC3, (uchar *)dev->get_frame_data(rs::stream::color));  //prevent to conflicts
     rs::context ctx;
     rs::device * dev = ctx.get_device(0);
-    dev->enable_stream(rs::stream::color, INPUT_WIDTH, INPUT_HEIGHT, rs::format::rgb8, FRAMERATE);
-    dev->start();
     
     //Open camera
     cout<<"Opening Camera..."<<endl;
-    
-    const rs::intrinsics color_intrin = dev->get_stream_intrinsics( rs::stream::color );
-    cout<<"fx"<<color_intrin.fx<<endl;
-    cout<<"fy"<<color_intrin.fy<<endl;
-
-    int frames = 0; float time = 0, fps = 0;
-    auto t0 = std::chrono::high_resolution_clock::now();
+    dev->enable_stream(rs::stream::color, INPUT_WIDTH, INPUT_HEIGHT, rs::format::rgb8, FRAMERATE);
+    dev->start();
 
     while(1) {
-        begin = clock();
-        dev->wait_for_frames();
+        //check for FPS(Frame Per Second)
         auto t1 = std::chrono::high_resolution_clock::now();
         time += std::chrono::duration<float>(t1-t0).count();
         t0 = t1;
@@ -58,7 +54,9 @@ int main ( int argc,char **argv ) {
             frames = 0;
             time = 0;
         }
-	cv::Mat imgB(INPUT_HEIGHT, INPUT_WIDTH, CV_8UC3, (uchar *)dev->get_frame_data(rs::stream::color));
+
+        dev->wait_for_frames();
+	    cv::Mat imgB(INPUT_HEIGHT, INPUT_WIDTH, CV_8UC3, (uchar *)dev->get_frame_data(rs::stream::color));
 		cvtColor(imgB, imgB, COLOR_RGB2GRAY);
 		Size img_sz = imgB.size();
 		Mat imgC(img_sz,1);
